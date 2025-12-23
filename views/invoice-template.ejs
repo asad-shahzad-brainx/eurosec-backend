@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice <%= invoiceNumber %></title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #333;
+      background: #fff;
+    }
+
+    .container {
+      padding: 0;
+      max-width: 100%;
+    }
+
+    /* Header Section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .header-left h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .header-left .invoice-meta {
+      color: #666;
+      font-size: 12px;
+    }
+
+    .header-left .invoice-meta .label {
+      color: #999;
+    }
+
+    .header-left .invoice-meta .value {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .header-right .company-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 5px;
+    }
+
+    .header-right .dates {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .header-right .dates div {
+      margin-bottom: 3px;
+    }
+
+    .header-right .dates .label {
+      color: #999;
+    }
+
+    /* Three Column Address Section */
+    .address-section {
+      display: table;
+      width: 100%;
+      margin-bottom: 25px;
+      border-collapse: collapse;
+    }
+
+    .address-column {
+      display: table-cell;
+      width: 33.33%;
+      vertical-align: top;
+      padding-right: 20px;
+    }
+
+    .address-column:last-child {
+      padding-right: 0;
+      text-align: right;
+    }
+
+    .address-column h3 {
+      font-size: 10px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .address-column .name {
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 4px;
+    }
+
+    .address-column .address-line {
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .address-column .contact {
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* Line Items Table */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .items-table thead {
+      background: #f5f5f5;
+    }
+
+    .items-table thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #666;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .items-table thead th.text-right {
+      text-align: right;
+    }
+
+    .items-table thead th.text-center {
+      text-align: center;
+    }
+
+    .items-table tbody td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+
+    .items-table tbody tr:last-child td {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .items-table .description {
+      font-weight: 500;
+      color: #000;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Totals Section */
+    .totals-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .totals-table {
+      width: 280px;
+      border-collapse: collapse;
+    }
+
+    .totals-table tr td {
+      padding: 6px 0;
+      font-size: 11px;
+    }
+
+    .totals-table tr td:first-child {
+      color: #666;
+      text-align: left;
+    }
+
+    .totals-table tr td:last-child {
+      text-align: right;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .totals-table tr.total-row {
+      border-top: 2px solid #000;
+    }
+
+    .totals-table tr.total-row td {
+      padding-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #000;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #999;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <h1>INVOICE</h1>
+        <div class="invoice-meta">
+          <div><span class="label">Invoice number:</span> <span class="value"><%= invoiceNumber %></span></div>
+          <div style="margin-top: 5px;"><span class="label">Invoice total:</span> <span class="value" style="font-size: 14px; font-weight: 600;"><%= invoiceTotal %></span></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <% if (merchant.companyName) { %>
+          <div class="company-name"><%= merchant.companyName %></div>
+        <% } %>
+        <div class="dates">
+          <div><span class="label">Date of issue:</span> <%= dateOfIssue %></div>
+          <div><span class="label">Date of supply:</span> <%= dateOfSupply %></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three Column Address Section -->
+    <div class="address-section">
+      <div class="address-column">
+        <h3>Bill to</h3>
+        <% if (billTo.companyName) { %>
+          <div class="name"><%= billTo.companyName %></div>
+        <% } %>
+        <% if (billTo.line1) { %>
+          <div class="address-line"><%= billTo.line1 %></div>
+        <% } %>
+        <% if (billTo.line2) { %>
+          <div class="address-line"><%= billTo.line2 %></div>
+        <% } %>
+        <% if (billTo.zip || billTo.city) { %>
+          <div class="address-line"><%= billTo.zip %> <%= billTo.city %></div>
+        <% } %>
+        <% if (billTo.country) { %>
+          <div class="address-line"><%= billTo.country %></div>
+        <% } %>
+      </div>
+
+      <div class="address-column">
+        <h3>Ship to</h3>
+        <% if (shipTo.companyName) { %>
+          <div class="name"><%= shipTo.companyName %></div>
+        <% } %>
+        <% if (shipTo.line1) { %>
+          <div class="address-line"><%= shipTo.line1 %></div>
+        <% } %>
+        <% if (shipTo.line2) { %>
+          <div class="address-line"><%= shipTo.line2 %></div>
+        <% } %>
+        <% if (shipTo.zip || shipTo.city) { %>
+          <div class="address-line"><%= shipTo.zip %> <%= shipTo.city %></div>
+        <% } %>
+        <% if (shipTo.country) { %>
+          <div class="address-line"><%= shipTo.country %></div>
+        <% } %>
+      </div>
+
+      <div class="address-column">
+        <h3>Merchant</h3>
+        <% if (merchant.companyName) { %>
+          <div class="name"><%= merchant.companyName %></div>
+        <% } %>
+        <% if (merchant.address1) { %>
+          <div class="address-line"><%= merchant.address1 %></div>
+        <% } %>
+        <% if (merchant.address2) { %>
+          <div class="address-line"><%= merchant.address2 %></div>
+        <% } %>
+        <% if (merchant.zip || merchant.city) { %>
+          <div class="address-line"><%= merchant.zip %> <%= merchant.city %></div>
+        <% } %>
+        <% if (merchant.country) { %>
+          <div class="address-line"><%= merchant.country %></div>
+        <% } %>
+        <% if (merchant.email) { %>
+          <div class="contact"><%= merchant.email %></div>
+        <% } %>
+        <% if (merchant.phone) { %>
+          <div class="contact"><%= merchant.phone %></div>
+        <% } %>
+        <% if (merchant.vatId) { %>
+          <div class="contact"><%= merchant.vatId %></div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Line Items Table -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 50%;">Description</th>
+          <th class="text-center" style="width: 10%;">Quantity</th>
+          <th class="text-right" style="width: 15%;">Unit price</th>
+          <th class="text-center" style="width: 10%;">VAT rate</th>
+          <th class="text-right" style="width: 15%;">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% lineItems.forEach(function(item) { %>
+          <tr>
+            <td class="description"><%= item.description %></td>
+            <td class="text-center"><%= item.quantity %></td>
+            <td class="text-right"><%= item.unitPrice %></td>
+            <td class="text-center"><%= item.vatRateFormatted %></td>
+            <td class="text-right"><%= item.amount %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <!-- Totals Section -->
+    <div class="totals-section">
+      <table class="totals-table">
+        <tr>
+          <td>Subtotal</td>
+          <td><%= pricing.subtotal %></td>
+        </tr>
+        <% if (discount && discount.amount > 0) { %>
+          <tr>
+            <td><%= discount.description %></td>
+            <td>-<%= discount.amountFormatted %></td>
+          </tr>
+        <% } %>
+        <tr>
+          <td>VAT (<%= pricing.vatRateFormatted %>)</td>
+          <td><%= pricing.vatAmount %></td>
+        </tr>
+        <% if (pricing.shippingRaw > 0) { %>
+          <tr>
+            <td>Shipping</td>
+            <td><%= pricing.shipping %></td>
+          </tr>
+          <tr>
+            <td>Shipping VAT (<%= pricing.shippingVatRateFormatted %>)</td>
+            <td><%= pricing.shippingVat %></td>
+          </tr>
+        <% } %>
+        <tr class="total-row">
+          <td>Total</td>
+          <td><%= pricing.total %></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Bank Details -->
+    <div style="margin-top: 25px; margin-bottom: 15px;">
+      <h3 style="font-size: 10px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Banking Details</h3>
+      <div style="font-weight: 500; color: #666; font-size: 10px;">
+        <div style="margin-bottom: 3px;">Bank: Swedbank</div>
+        <div style="margin-bottom: 3px;">IBAN: EE462200221055242663</div>
+        <div>SWIFT: HABAEE2X</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-left">
+        <div style="margin-bottom: 8px;">
+          <% if (merchant.companyName) { %>
+            <span>Provided by: <%= merchant.companyName %></span>
+          <% } %>
+          <% if (merchant.vatId) { %>
+            <span style="margin-left: 15px;">VAT ID: <%= merchant.vatId %></span>
+          <% } %>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span>Issued on <%= dateOfIssue %></span>
+        <span style="margin-left: 15px;">Invoice <%= invoiceNumber %></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

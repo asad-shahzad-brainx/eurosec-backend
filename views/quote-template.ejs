@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quote <%= quoteNumber %></title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #333;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #000;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #000;
+    }
+
+    .header .shop-name {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .quote-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .quote-info .section {
+      flex: 1;
+    }
+
+    .quote-info h2 {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #000;
+      text-transform: uppercase;
+    }
+
+    .quote-info p {
+      margin-bottom: 5px;
+      line-height: 1.8;
+    }
+
+    .quote-details {
+      background: #f8f8f8;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 5px;
+    }
+
+    .quote-details .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .quote-details .detail-row strong {
+      font-weight: bold;
+    }
+
+    .line-items {
+      margin-bottom: 30px;
+    }
+
+    .line-items h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    table thead {
+      background: #000;
+      color: #fff;
+    }
+
+    table thead th {
+      padding: 12px 8px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    table tbody td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table tbody tr:last-child td {
+      border-bottom: 2px solid #000;
+    }
+
+    table tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .pricing {
+      margin-left: auto;
+      width: 300px;
+      margin-bottom: 30px;
+    }
+
+    .pricing-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .pricing-row.total {
+      border-top: 2px solid #000;
+      border-bottom: 3px double #000;
+      margin-top: 10px;
+      padding-top: 12px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .pricing-row .label {
+      font-weight: normal;
+    }
+
+    .pricing-row.total .label {
+      font-weight: bold;
+    }
+
+    .notes {
+      margin-top: 30px;
+      padding: 15px;
+      background: #f8f8f8;
+      border-left: 4px solid #000;
+    }
+
+    .notes h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #ddd;
+      text-align: center;
+      font-size: 10px;
+      color: #666;
+    }
+
+    .properties {
+      font-size: 10px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    .property-item {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>QUOTE</h1>
+    <div class="shop-name"><%= shop.name %></div>
+    <div style="font-size: 12px; color: #999;"><%= quoteDate %></div>
+  </div>
+
+  <!-- Quote Details -->
+  <div class="quote-details">
+    <div class="detail-row">
+      <strong>Quote Number:</strong>
+      <span><%= quoteNumber %></span>
+    </div>
+    <div class="detail-row">
+      <strong>Quote Date:</strong>
+      <span><%= quoteDate %></span>
+    </div>
+    <div class="detail-row">
+      <strong>Currency:</strong>
+      <span><%= pricing.currency %></span>
+    </div>
+  </div>
+
+  <!-- Customer & Address Information -->
+  <div class="quote-info">
+    <div class="section">
+      <h2>Customer Information</h2>
+      <p><strong><%= customer.fullName %></strong></p>
+      <% if (customer.email) { %>
+        <p><%= customer.email %></p>
+      <% } %>
+      <% if (customer.phone) { %>
+        <p><%= customer.phone %></p>
+      <% } %>
+    </div>
+
+    <% if (shippingAddress) { %>
+      <div class="section">
+        <h2>Shipping Address</h2>
+        <p><strong><%= shippingAddress.fullName %></strong></p>
+        <% if (shippingAddress.company) { %>
+          <p><%= shippingAddress.company %></p>
+        <% } %>
+        <p style="white-space: pre-line;"><%= shippingAddress.formatted %></p>
+        <% if (shippingAddress.phone) { %>
+          <p><%= shippingAddress.phone %></p>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (billingAddress) { %>
+      <div class="section">
+        <h2>Billing Address</h2>
+        <p><strong><%= billingAddress.fullName %></strong></p>
+        <% if (billingAddress.company) { %>
+          <p><%= billingAddress.company %></p>
+        <% } %>
+        <p style="white-space: pre-line;"><%= billingAddress.formatted %></p>
+        <% if (billingAddress.phone) { %>
+          <p><%= billingAddress.phone %></p>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Line Items -->
+  <div class="line-items">
+    <h2>Items</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Item</th>
+          <th>SKU</th>
+          <th class="text-center">Qty</th>
+          <th class="text-right">Price</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% lineItems.forEach(function(item) { %>
+          <tr>
+            <td><%= item.index %></td>
+            <td>
+              <strong><%= item.title %></strong>
+              <% if (item.variantTitle && item.variantTitle !== item.title) { %>
+                <br><small style="color: #666;"><%= item.variantTitle %></small>
+              <% } %>
+              <% if (item.properties && item.properties.length > 0) { %>
+                <div class="properties">
+                  <% item.properties.forEach(function(prop) { %>
+                    <span class="property-item"><%= prop.key %>: <%= prop.value %></span>
+                  <% }); %>
+                </div>
+              <% } %>
+            </td>
+            <td><%= item.sku %></td>
+            <td class="text-center"><%= item.quantity %></td>
+            <td class="text-right"><%= pricing.currency %> <%= item.price %></td>
+            <td class="text-right"><%= pricing.currency %> <%= item.lineTotal %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pricing Summary -->
+  <div class="pricing">
+    <div class="pricing-row">
+      <span class="label">Subtotal:</span>
+      <span><%= pricing.currency %> <%= pricing.subtotal %></span>
+    </div>
+    
+    <% if (pricing.discountCodes && pricing.discountCodes.length > 0) { %>
+      <div class="pricing-row">
+        <span class="label">Discounts:</span>
+        <span><%= pricing.discountCodes.join(', ') %></span>
+      </div>
+    <% } %>
+
+    <div class="pricing-row total">
+      <span class="label">Total:</span>
+      <span><%= pricing.currency %> <%= pricing.total %></span>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <% if (note) { %>
+    <div class="notes">
+      <h3>Notes</h3>
+      <p><%= note %></p>
+    </div>
+  <% } %>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>This quote is valid for 30 days from the date of issue.</p>
+    <p>Generated on <%= quoteDate %> | Quote #<%= quoteNumber %></p>
+    <% if (shop.domain) { %>
+      <p><%= shop.domain %></p>
+    <% } %>
+  </div>
+</body>
+</html>
+
