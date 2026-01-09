@@ -380,13 +380,14 @@ class PdfService {
    * Format address for invoice display
    * @param {Object} address - Address object
    * @param {Object} customer - Customer object
-   * @param {Object} company - B2B Company object (optional)
+   * @param {Object} company - B2B Company object (optional, includes name and vatId)
    * @returns {Object} Formatted address
    */
   formatInvoiceAddress(address, customer, company = null) {
     if (!address) {
       return {
         companyName: company?.name || '',
+        vatId: company?.vatId || '',
         name: customer?.firstName && customer?.lastName 
           ? `${customer.firstName} ${customer.lastName}`.trim()
           : 'Customer',
@@ -406,6 +407,7 @@ class PdfService {
 
     return {
       companyName: company?.name || address.company || '',
+      vatId: company?.vatId || '',
       name,
       line1: address.address1 || '',
       line2: address.address2 || '',

@@ -18,12 +18,8 @@ module.exports = fp(async function (fastify, opts) {
       storefrontAccessToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN,
       apiVersion: process.env.SHOPIFY_API_VERSION || '2025-10'
     },
-    // Merchant/Company details for invoices
-    // Note: Most fields will be populated from Shopify store data
-    // VAT ID must be set via environment variable (not available in Shopify API)
     merchant: {
       vatId: process.env.MERCHANT_VAT_ID || '',
-      // Optional fallback values (only used if Shopify fetch fails and env vars are set)
       companyName: process.env.MERCHANT_COMPANY_NAME || '',
       address1: process.env.MERCHANT_ADDRESS1 || '',
       address2: process.env.MERCHANT_ADDRESS2 || '',
@@ -33,7 +29,7 @@ module.exports = fp(async function (fastify, opts) {
       email: process.env.MERCHANT_EMAIL || '',
       phone: process.env.MERCHANT_PHONE || ''
     },
-    // Invoice settings
+    // Invoice settings (fetched from shop metafields, env var as fallback)
     invoice: {
       prefix: process.env.INVOICE_PREFIX || 'INV-EE-'
     },
@@ -56,11 +52,6 @@ module.exports = fp(async function (fastify, opts) {
     }
   }
 
-  // Warn if VAT ID is not set (required for invoices)
-  if (!config.merchant.vatId) {
-    fastify.log.warn('MERCHANT_VAT_ID is not set - invoices will be generated without VAT ID')
-  }
-
   // Log configuration status (without sensitive data)
   fastify.log.info({
     env: config.env,
@@ -80,23 +71,34 @@ module.exports = fp(async function (fastify, opts) {
       // Only fetch if Shopify client is available
       if (fastify.shopify && fastify.shopify.fetchShopData) {
         const shopData = await fastify.shopify.fetchShopData()
-        console.log("ShopData", shopData);
         
         // Store shop data
         config.shop = shopData
         
-        // Merge shop data with merchant config (shop data takes precedence, use empty strings if not available)
+        // Merge shop data with merchant config (shop data and metafields take precedence)
         config.merchant = {
           ...config.merchant,
-          companyName: shopData.billingAddress?.company || shopData.name || '',
-          address1: shopData.billingAddress?.address1 || '',
-          address2: shopData.billingAddress?.address2 || '',
-          city: shopData.billingAddress?.city || '',
-          zip: shopData.billingAddress?.zip || '',
-          country: shopData.billingAddress?.country || '',
-          email: shopData.contactEmail || shopData.email || '',
-          phone: shopData.billingAddress?.phone || ''
-          // vatId remains from environment variable (not available in API)
+          companyName: shopData.billingAddress?.company || shopData.name || config.merchant.companyName || '',
+          address1: shopData.billingAddress?.address1 || config.merchant.address1 || '',
+          address2: shopData.billingAddress?.address2 || config.merchant.address2 || '',
+          city: shopData.billingAddress?.city || config.merchant.city || '',
+          zip: shopData.billingAddress?.zip || config.merchant.zip || '',
+          country: shopData.billingAddress?.country || config.merchant.country || '',
+          email: shopData.contactEmail || shopData.email || config.merchant.email || '',
+          phone: shopData.billingAddress?.phone || config.merchant.phone || '',
+          // VAT ID from shop metafield, with env var fallback
+          vatId: shopData.vatId?.value || config.merchant.vatId || ''
+        }
+
+        // Invoice prefix from shop metafield, with env var fallback
+        config.invoice = {
+          ...config.invoice,
+          prefix: shopData.invoicePrefix?.value || config.invoice.prefix || 'INV-EE-'
+        }
+
+        // Warn if VAT ID is not set (required for invoices)
+        if (!config.merchant.vatId) {
+          fastify.log.warn('Merchant VAT ID is not set (neither in shop metafield custom.vat_id nor MERCHANT_VAT_ID env var) - invoices will be generated without VAT ID')
         }
 
         // Warn about missing critical merchant information
@@ -116,9 +118,11 @@ module.exports = fp(async function (fastify, opts) {
         fastify.log.info({
           companyName: config.merchant.companyName || '(empty)',
           email: config.merchant.email || '(empty)',
+          vatId: config.merchant.vatId || '',
+          invoicePrefix: config.invoice.prefix,
           currency: shopData.currencyCode,
           hasMissingFields: missingFields.length > 0
-        }, 'Merchant configuration updated with shop data')
+        }, 'Merchant configuration updated with shop data and metafields')
       }
     } catch (error) {
       // Log error but don't fail startup - use fallback values

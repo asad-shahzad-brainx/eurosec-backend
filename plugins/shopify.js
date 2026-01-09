@@ -55,6 +55,7 @@ module.exports = fp(async function (fastify, opts) {
     const query = `
       query {
         shop {
+          id
           name
           email
           contactEmail
@@ -68,6 +69,12 @@ module.exports = fp(async function (fastify, opts) {
             zip
             phone
             company
+          }
+          vatId: metafield(namespace: "custom", key: "vat_id") {
+            value
+          }
+          invoicePrefix: metafield(namespace: "custom", key: "invoice_prefix") {
+            value
           }
         }
       }

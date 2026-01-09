@@ -256,6 +256,11 @@ class DraftOrderService {
                 company {
                   name
                 }
+                location {
+                  taxSettings {
+                    taxRegistrationId
+                  }
+                }
               }
             }
           }
@@ -441,6 +446,11 @@ class DraftOrderService {
               company {
                 name
               }
+              location {
+                taxSettings {
+                  taxRegistrationId
+                }
+              }
             }
           }
         }
@@ -560,6 +570,13 @@ class DraftOrderService {
    * @returns {Object} Formatted response
    */
   formatDraftOrderResponse(draftOrder) {
+    // Extract company info including VAT from purchasing entity
+    const purchasingCompany = draftOrder.purchasingEntity
+    const companyInfo = purchasingCompany?.company ? {
+      name: purchasingCompany.company.name || '',
+      vatId: purchasingCompany.location?.taxSettings?.taxRegistrationId || ''
+    } : null
+
     return {
       id: draftOrder.id,
       name: draftOrder.name,
@@ -580,7 +597,7 @@ class DraftOrderService {
       shippingAddress: draftOrder.shippingAddress,
       billingAddress: draftOrder.billingAddress,
       lineItems: draftOrder.lineItems,
-      company: draftOrder.purchasingEntity?.company || null
+      company: companyInfo
     }
   }
   /**

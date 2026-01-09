@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice <%= invoiceNumber %></title>
+  <title>Quote <%= invoiceNumber %></title>
   <style>
     * {
       margin: 0;
@@ -252,7 +252,7 @@
     <!-- Header -->
     <div class="header">
       <div class="header-left">
-        <h1>INVOICE</h1>
+        <h1>QUOTE</h1>
         <div class="invoice-meta">
           <div><span class="label">Invoice number:</span> <span class="value"><%= invoiceNumber %></span></div>
           <div style="margin-top: 5px;"><span class="label">Invoice total:</span> <span class="value" style="font-size: 14px; font-weight: 600;"><%= invoiceTotal %></span></div>
@@ -276,6 +276,9 @@
         <% if (billTo.companyName) { %>
           <div class="name"><%= billTo.companyName %></div>
         <% } %>
+        <% if (billTo.vatId) { %>
+          <div class="address-line" style="font-size: 10px; color: #666;">VAT: <%= billTo.vatId %></div>
+        <% } %>
         <% if (billTo.line1) { %>
           <div class="address-line"><%= billTo.line1 %></div>
         <% } %>
@@ -294,6 +297,9 @@
         <h3>Ship to</h3>
         <% if (shipTo.companyName) { %>
           <div class="name"><%= shipTo.companyName %></div>
+        <% } %>
+        <% if (shipTo.vatId) { %>
+          <div class="address-line" style="font-size: 10px; color: #666;">VAT: <%= shipTo.vatId %></div>
         <% } %>
         <% if (shipTo.line1) { %>
           <div class="address-line"><%= shipTo.line1 %></div>
@@ -333,7 +339,7 @@
           <div class="contact"><%= merchant.phone %></div>
         <% } %>
         <% if (merchant.vatId) { %>
-          <div class="contact"><%= merchant.vatId %></div>
+          <div class="contact">VAT: <%= merchant.vatId %></div>
         <% } %>
       </div>
     </div>
