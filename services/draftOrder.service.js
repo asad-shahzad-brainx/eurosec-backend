@@ -273,7 +273,6 @@ class DraftOrderService {
     `
 
     try {
-      console.log("input", input);
       const response = await this.adminClient.request(mutation, {
         variables: { input }
       })
@@ -628,7 +627,6 @@ class DraftOrderService {
       })
 
       const profiles = response.data?.customer?.companyContactProfiles || []
-      console.log("profiles", profiles);
       const match = profiles.find(profile => profile.company?.id === companyId)
 
       return match ? match.id : null

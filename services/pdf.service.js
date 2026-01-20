@@ -99,24 +99,27 @@ class PdfService {
     const page = await browser.newPage()
 
     // Set content and wait for any resources to load
-    await page.setContent(html, {
-      waitUntil: 'networkidle0'
-    })
+    try {
+      await page.setContent(html, {
+        waitUntil: 'networkidle0'
+      })
 
-    // Generate PDF
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '15mm',
-        right: '15mm',
-        bottom: '15mm',
-        left: '15mm'
-      }
-    })
+      // Generate PDF
+      const pdf = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '15mm',
+          right: '15mm',
+          bottom: '15mm',
+          left: '15mm'
+        }
+      })
 
-    await page.close()
-    return pdf
+      return pdf
+    } finally {
+      await page.close()
+    }
   }
 
   /**
