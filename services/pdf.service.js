@@ -356,7 +356,7 @@ class PdfService {
       return orderTaxLines[0].rate || 0
     }
     
-    return 0.24 // Default to 24% for Estonia
+    return 0
   }
 
   /**
@@ -375,8 +375,8 @@ class PdfService {
    * @returns {number} Shipping tax rate as decimal
    */
   getShippingTaxRate(shippingLine) {
-    if (!shippingLine?.taxLines || shippingLine.taxLines.length === 0) return 0.24 // Default
-    return shippingLine.taxLines[0].rate || 0.24
+    if (!shippingLine?.taxLines || shippingLine.taxLines.length === 0) return 0
+    return shippingLine.taxLines[0].rate || 0
   }
 
   /**
