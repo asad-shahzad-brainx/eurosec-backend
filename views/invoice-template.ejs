@@ -277,7 +277,7 @@
           <div class="name"><%= billTo.companyName %></div>
         <% } %>
         <% if (billTo.vatId) { %>
-          <div class="address-line" style="font-size: 10px; color: #666;">VAT: <%= billTo.vatId %></div>
+          <div class="address-line" style="font-size: 10px; color: #666;">VAT No. <%= billTo.vatId %></div>
         <% } %>
         <% if (billTo.line1) { %>
           <div class="address-line"><%= billTo.line1 %></div>
@@ -299,7 +299,7 @@
           <div class="name"><%= shipTo.companyName %></div>
         <% } %>
         <% if (shipTo.vatId) { %>
-          <div class="address-line" style="font-size: 10px; color: #666;">VAT: <%= shipTo.vatId %></div>
+          <div class="address-line" style="font-size: 10px; color: #666;">VAT No. <%= shipTo.vatId %></div>
         <% } %>
         <% if (shipTo.line1) { %>
           <div class="address-line"><%= shipTo.line1 %></div>
@@ -320,6 +320,9 @@
         <% if (merchant.companyName) { %>
           <div class="name"><%= merchant.companyName %></div>
         <% } %>
+        <% if (merchant.vatId) { %>
+          <div class="contact">VAT No. <%= merchant.vatId %></div>
+        <% } %>
         <% if (merchant.address1) { %>
           <div class="address-line"><%= merchant.address1 + " " + merchant.address2 %></div>
         <% } %>
@@ -334,9 +337,6 @@
         <% } %>
         <% if (merchant.phone) { %>
           <div class="contact"><%= merchant.phone %></div>
-        <% } %>
-        <% if (merchant.vatId) { %>
-          <div class="contact">VAT: <%= merchant.vatId %></div>
         <% } %>
       </div>
     </div>
