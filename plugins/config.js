@@ -31,7 +31,8 @@ module.exports = fp(async function (fastify, opts) {
     },
     // Invoice settings (fetched from shop metafields, env var as fallback)
     invoice: {
-      prefix: process.env.INVOICE_PREFIX || 'INV-EE-'
+      prefix: process.env.INVOICE_PREFIX || 'INV-EE-',
+      bccEmail: process.env.INVOICE_BCC_EMAIL || ''
     },
     // Shop data will be populated from Shopify API
     shop: null

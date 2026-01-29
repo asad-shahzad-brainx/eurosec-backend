@@ -183,7 +183,10 @@ module.exports = async function (fastify, opts) {
           }
 
           // Trigger send invoice mutation
-          await fastify.services.draftOrder.sendInvoice(draftOrder.id)
+          const bccEmail = fastify.config.invoice.bccEmail
+          await fastify.services.draftOrder.sendInvoice(draftOrder.id, {
+            bcc: bccEmail ? [bccEmail] : []
+          })
 
           fastify.log.info({ draftOrderId: draftOrder.id }, 'Background operations completed successfully')
         } catch (error) {

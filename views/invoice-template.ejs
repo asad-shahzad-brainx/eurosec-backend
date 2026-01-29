@@ -321,10 +321,7 @@
           <div class="name"><%= merchant.companyName %></div>
         <% } %>
         <% if (merchant.address1) { %>
-          <div class="address-line"><%= merchant.address1 %></div>
-        <% } %>
-        <% if (merchant.address2) { %>
-          <div class="address-line"><%= merchant.address2 %></div>
+          <div class="address-line"><%= merchant.address1 + " " + merchant.address2 %></div>
         <% } %>
         <% if (merchant.zip || merchant.city) { %>
           <div class="address-line"><%= merchant.zip %> <%= merchant.city %></div>
